@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: "app-home",
@@ -13,7 +14,7 @@ export class HomePage {
     password: ""
   };
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private navCtrl: NavController) {}
 
   submit() {
     console.log("Submitting to the server...");
@@ -22,11 +23,17 @@ export class HomePage {
     this.httpClient
       .post("http://localhost:3000/api/users", this.user)
       .subscribe(
-        (response) => {
+        (response: any) => {
           console.log(response);
+          this.navCtrl.navigateForward("page2", {
+            queryParams: {
+              userId: response.id
+            }
+          });
         },
         (err) => {
           console.log(err);
+          alert(err.error.message);
         }
       );
   }
